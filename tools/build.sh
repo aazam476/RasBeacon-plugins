@@ -2,17 +2,22 @@
 # Builds every plugin in plugins/ into dist/<id>.rba, with its icon and
 # dist/rasbeacon-catalog.json for RasBeacon's catalog.
 #
-# Usage: tools/build.sh RBSIGN
-#   RBSIGN is RasBeacon's rbsign program (built from aazam476/RasBeacon,
-#   cmd/rbsign). With RASBEACON_PLUGIN_SIGNING_KEY set, the plugins are
-#   signed; without it they are not (for checking pull requests).
+# Usage: tools/build.sh [RBSIGN]
+#   RBSIGN is RasBeacon's rbsign program; without it, tools/rbsign.sh builds
+#   one. With RASBEACON_PLUGIN_SIGNING_KEY set, the plugins are signed;
+#   without it they are not (for trying them out and checking pull
+#   requests).
 #
 # Needs docker with buildx (images are built for linux/arm64; an arm64
 # machine is fastest), zip and python3.
 set -euo pipefail
 
-rbsign="$(realpath "${1:?usage: tools/build.sh RBSIGN}")"
 root="$(cd "$(dirname "$0")/.." && pwd)"
+if [ $# -ge 1 ]; then
+  rbsign="$(realpath "$1")"
+else
+  rbsign="$root/tools/rbsign.sh"
+fi
 dist="$root/dist"
 rm -rf "$dist"
 mkdir -p "$dist"
