@@ -20,32 +20,71 @@ plugins/<id>/        one plugin: manifest.json, icon.png, README.md, and
 icons/               the icons' SVG sources
 tools/build.sh       builds every plugin into dist/<id>.rba (and the catalog)
 tools/catalog.py     writes dist/rasbeacon-catalog.json
+tools/rbsign.sh      RasBeacon's rbsign: signing keys, signing, checking
 ```
 
 ## Building
 
-On an arm64 Linux machine with Docker (buildx), Go, zip and Python 3:
+On Linux with Docker (buildx), Go 1.24 or newer, git, zip and Python 3 (an
+arm64 machine is fastest; the images are for the Raspberry Pi):
 
 ```sh
-git clone https://github.com/aazam476/RasBeacon ../RasBeacon
-go build -C ../RasBeacon -o /tmp/rbsign ./cmd/rbsign
-tools/build.sh /tmp/rbsign      # dist/*.rba, not signed
+tools/build.sh      # dist/*.rba, not signed
 ```
 
 Install a file from `dist/` with **Plugins → Install from a file**.
 
-## Releases and signing
+`tools/rbsign.sh` builds `rbsign` from
+[RasBeacon's source](https://github.com/aazam476/RasBeacon/tree/main/cmd/rbsign)
+the first time (into `.cache/`). Check any plugin file the way RasBeacon
+does with `tools/rbsign.sh plugin-check dist/*.rba`.
 
-The Release workflow builds every plugin, signs it and publishes a GitHub
-release; RasBeacon's catalog reads the newest one. Push a tag
-(`git tag v2026.10.1 && git push origin v2026.10.1`) or run the workflow
-from the Actions tab.
+## Signing key (once)
 
-The plugins are signed with the key in the repository secret
-`RASBEACON_PLUGIN_SIGNING_KEY` (make one with `rbsign plugin-keygen`; it is
-never committed). RasBeacon remembers the key at the first install and only
-accepts updates signed with it, so **keep the key safe and don't replace
-it**: owners would have to remove and reinstall every plugin.
+Releases are signed, so RasBeacon can tell that an update comes from the
+same author (see [Signing](https://github.com/aazam476/RasBeacon/blob/main/docs/plugins.md#signing)).
+Make the key once:
+
+1. Make a key on your computer:
+
+   ```sh
+   tools/rbsign.sh plugin-keygen
+   ```
+
+   It prints a **private key**, a public key and a key ID (RasBeacon shows the
+   ID when installing your plugins).
+2. Save the private key somewhere safe, such as a password manager. Never
+   commit it or paste it into an issue or chat.
+3. On GitHub, open this repository's **Settings → Secrets and variables →
+   Actions → New repository secret**, name it
+   `RASBEACON_PLUGIN_SIGNING_KEY` and paste the private key.
+
+Keep the same key from then on. RasBeacon remembers it at the first install
+and accepts only updates signed with it; with a new key, owners would have to
+remove and reinstall every plugin.
+
+## Publishing a release
+
+RasBeacon's catalog lists the plugins in this repository's **newest
+release**. To publish one, open **Actions → Release → Run workflow**, type a
+version name such as `v2026.10.1`, and run it (or push a tag with that name).
+The workflow builds every plugin, signs it with the key, and publishes the
+release with the `.rba` files, their icons and `rasbeacon-catalog.json`.
+
+Bump a plugin's `version` in its `manifest.json` whenever it changes:
+RasBeacon offers an update only for a newer version.
+
+## Make your own plugin repository
+
+Anyone can publish plugins. To start your own:
+
+1. Copy this repository (fork it, or **Use this template**), and replace the
+   folders in `plugins/` with yours (see
+   [Making a plugin](https://github.com/aazam476/RasBeacon/blob/main/docs/plugins.md#making-a-plugin)).
+2. Make your own signing key and secret ([above](#signing-key-once)).
+3. Publish a release ([above](#publishing-a-release)).
+4. On RasBeacon, add your repository under **Plugins → Browse plugins →
+   Sources** as `owner/repository`.
 
 ## License
 
