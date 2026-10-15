@@ -40,7 +40,7 @@ jobs:
           RASBEACON_PLUGIN_SIGNING_KEY: ${{ secrets.RASBEACON_PLUGIN_SIGNING_KEY }}
         run: |
           if [ -z "$RASBEACON_PLUGIN_SIGNING_KEY" ]; then
-            echo "::error::Add the RASBEACON_PLUGIN_SIGNING_KEY secret (see README.md, "Signing key (once)" or "Publishing")."
+            echo "::error::Add the RASBEACON_PLUGIN_SIGNING_KEY secret (see README.md: Signing key, and Publishing)."
             exit 1
           fi
           tools/build.sh "$RUNNER_TEMP/rbsign"
