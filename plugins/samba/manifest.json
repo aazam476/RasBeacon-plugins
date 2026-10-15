@@ -1,0 +1,23 @@
+{
+  "id": "samba",
+  "name": "Samba",
+  "version": "1.0.0",
+  "description": "Shares a folder, or a USB drive, with the computers on your hotspot.",
+  "author": "RasBeacon",
+  "homepage": "https://www.samba.org",
+  "permissions": ["usb-drive"],
+  "ports": [{ "name": "File sharing (SMB)", "container": 445 }],
+  "memoryMb": 128,
+  "cpus": 0.5,
+  "storageMb": 2048,
+  "volumes": [{ "name": "share", "path": "/share" }],
+  "usbDrive": { "path": "/share", "optional": true },
+  "settings": [
+    { "key": "share", "label": "Share name", "type": "text", "default": "Files", "required": true, "env": "SMB_SHARE",
+      "help": "Letters, digits, spaces, - and _." },
+    { "key": "username", "label": "Username", "type": "text", "default": "traveler", "required": true, "env": "SMB_USER",
+      "help": "Lowercase letters, digits, - and _." },
+    { "key": "password", "label": "Password", "type": "password", "required": true, "env": "SMB_PASSWORD" }
+  ],
+  "afterInstall": "On a Mac choose Go → Connect to Server and type smb://{host}:{port:445}; on Windows open \\\\{host} in File Explorer (with port 445). Log in with the username and password you chose."
+}

@@ -1,0 +1,50 @@
+# Runs on every push and pull request: the Argon ONE program's tests, then
+# every plugin built into a (not signed) .rba and checked the way RasBeacon
+# checks it before installing.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Go tests (Argon ONE V2)
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: plugins/argon-one
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: plugins/argon-one/go.mod
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)" || (echo "Run gofmt -w on:"; gofmt -l .; exit 1)
+      - run: go vet ./...
+      - run: go test ./...
+
+  build:
+    name: Build and check the plugins
+    # The images are for the Raspberry Pi (arm64): built natively here.
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: aazam476/RasBeacon
+          path: rasbeacon
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: rasbeacon/go.mod
+      - name: Build rbsign (RasBeacon's plugin checker)
+        run: go build -C rasbeacon -o "$RUNNER_TEMP/rbsign" ./cmd/rbsign
+      - name: Build the plugins
+        run: tools/build.sh "$RUNNER_TEMP/rbsign"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: plugins-unsigned
+          path: dist/

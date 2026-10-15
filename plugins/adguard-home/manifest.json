@@ -1,0 +1,42 @@
+{
+  "id": "adguard-home",
+  "name": "AdGuard Home",
+  "version": "0.107.79-1",
+  "description": "Blocks ads and trackers for every device on your hotspot, and shows what they look up.",
+  "author": "RasBeacon (AdGuard Home by AdGuard)",
+  "homepage": "https://github.com/AdguardTeam/AdGuardHome",
+  "image": {
+    "ref": "docker.io/adguard/adguardhome:v0.107.79",
+    "digest": "sha256:aba9e3bf0613be3ba3755e1fc311b126e2c24bec25e18b6483894a88283074f0"
+  },
+  "permissions": ["internet"],
+  "ports": [{ "name": "Web interface", "container": 3000, "open": true }],
+  "memoryMb": 256,
+  "cpus": 0.5,
+  "storageMb": 512,
+  "volumes": [
+    { "name": "work", "path": "/opt/adguardhome/work" },
+    { "name": "conf", "path": "/opt/adguardhome/conf" }
+  ],
+  "settings": [
+    { "key": "username", "label": "Admin username", "type": "text", "default": "admin", "required": true },
+    { "key": "password", "label": "Admin password", "type": "password", "required": true,
+      "help": "For AdGuard Home's web interface. If you change it there, change it here too, for the numbers on this page." }
+  ],
+  "templates": [
+    { "file": "AdGuardHome.yaml", "path": "/opt/adguardhome/conf/AdGuardHome.yaml", "once": true }
+  ],
+  "afterInstall": "On the Internet page, set the DNS servers to {address} and turn on \"Also use while the VPN is on\". Then open AdGuard Home to choose its block lists.",
+  "metrics": [
+    { "label": "Queries (24 h)", "url": "http://{address}:3000/control/stats", "path": "num_dns_queries",
+      "username": "{setting:username}", "password": "{setting:password}" },
+    { "label": "Blocked", "url": "http://{address}:3000/control/stats", "path": "num_blocked_filtering",
+      "divideBy": "num_dns_queries", "format": "percent",
+      "username": "{setting:username}", "password": "{setting:password}" },
+    { "label": "Average answer", "url": "http://{address}:3000/control/stats", "path": "avg_processing_time",
+      "scale": 1000, "format": "ms", "username": "{setting:username}", "password": "{setting:password}" },
+    { "label": "Rules", "url": "http://{address}:3000/control/filtering/status", "path": "filters.0.rules_count",
+      "username": "{setting:username}", "password": "{setting:password}" }
+  ],
+  "health": { "url": "http://{address}:3000/" }
+}
