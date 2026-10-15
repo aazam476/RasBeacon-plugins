@@ -1,0 +1,26 @@
+# AdGuard Home's settings for its first start, written by RasBeacon. After
+# that AdGuard Home keeps this file itself (change settings in its web
+# interface). Settings left out keep AdGuard Home's defaults.
+http:
+  address: 0.0.0.0:3000
+users:
+  - name: {{json .Settings.username}}
+    password: {{json (bcrypt .Settings.password)}}
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: 53
+  # Quad9 over DNS-over-HTTPS (blocks known malware domains too). Its name is
+  # looked up with the bootstrap addresses; everything goes through the VPN.
+  upstream_dns:
+    - https://dns.quad9.net/dns-query
+  bootstrap_dns:
+    - 9.9.9.9
+    - 149.112.112.112
+  fallback_dns: []
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
+    name: AdGuard DNS filter
+    id: 1
+schema_version: 34

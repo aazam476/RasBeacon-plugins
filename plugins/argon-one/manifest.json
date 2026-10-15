@@ -1,0 +1,27 @@
+{
+  "id": "argon-one",
+  "name": "Argon ONE V2",
+  "version": "1.0.0",
+  "description": "Runs the Argon ONE V2 case's fan by temperature, and its power button.",
+  "author": "RasBeacon",
+  "homepage": "https://github.com/aazam476/RasBeacon-plugins",
+  "boards": ["pi4"],
+  "permissions": ["i2c", "gpio", "power-button", "temperature"],
+  "memoryMb": 32,
+  "cpus": 0.1,
+  "storageMb": 16,
+  "settings": [
+    { "key": "temp1", "label": "Fan on at", "type": "number", "default": "55", "min": 30, "max": 85, "unit": "°C", "env": "FAN_TEMP1" },
+    { "key": "speed1", "label": "First speed", "type": "number", "default": "10", "min": 0, "max": 100, "unit": "%", "env": "FAN_SPEED1" },
+    { "key": "temp2", "label": "Faster at", "type": "number", "default": "60", "min": 30, "max": 85, "unit": "°C", "env": "FAN_TEMP2" },
+    { "key": "speed2", "label": "Second speed", "type": "number", "default": "55", "min": 0, "max": 100, "unit": "%", "env": "FAN_SPEED2" },
+    { "key": "temp3", "label": "Fastest at", "type": "number", "default": "65", "min": 30, "max": 85, "unit": "°C", "env": "FAN_TEMP3" },
+    { "key": "speed3", "label": "Third speed", "type": "number", "default": "100", "min": 0, "max": 100, "unit": "%", "env": "FAN_SPEED3" }
+  ],
+  "afterInstall": "The fan now follows the temperature. Press the case's power button twice to restart RasBeacon, or hold it for 3 seconds to shut it down.",
+  "metrics": [
+    { "label": "Fan", "url": "http://{address}:8080/status", "path": "fan", "scale": 0.01, "format": "percent" },
+    { "label": "Temperature (°C)", "url": "http://{address}:8080/status", "path": "temperature", "format": "number" }
+  ],
+  "health": { "url": "http://{address}:8080/status" }
+}

@@ -1,0 +1,52 @@
+# Publishes the plugins: builds every plugin, signs it with the
+# RASBEACON_PLUGIN_SIGNING_KEY secret, and makes a GitHub release with the
+# .rba files, their icons and rasbeacon-catalog.json. RasBeacon's catalog
+# reads the newest release.
+#
+# Run it by pushing a tag (git tag v2026.10.1 && git push origin v2026.10.1),
+# or from the Actions tab with the tag to create.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to create, e.g. v2026.10.1"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04-arm
+    env:
+      TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: aazam476/RasBeacon
+          path: rasbeacon
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: rasbeacon/go.mod
+      - name: Build rbsign
+        run: go build -C rasbeacon -o "$RUNNER_TEMP/rbsign" ./cmd/rbsign
+      - name: Build and sign the plugins
+        env:
+          RASBEACON_PLUGIN_SIGNING_KEY: ${{ secrets.RASBEACON_PLUGIN_SIGNING_KEY }}
+        run: |
+          if [ -z "$RASBEACON_PLUGIN_SIGNING_KEY" ]; then
+            echo "::error::Add the RASBEACON_PLUGIN_SIGNING_KEY secret (see README.md, Signing)."
+            exit 1
+          fi
+          tools/build.sh "$RUNNER_TEMP/rbsign"
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" dist/* --target "$GITHUB_SHA" --title "Plugins $TAG" \
+            --notes "Plugins for RasBeacon. Install them from RasBeacon's Plugins page (Browse plugins), or download a .rba file and choose Install from a file."

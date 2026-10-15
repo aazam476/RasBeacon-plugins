@@ -1,0 +1,6 @@
+# The Samba plugin: Samba's file server on Alpine Linux.
+FROM docker.io/library/alpine:3.22
+RUN apk add --no-cache samba-server
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod 0755 /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
