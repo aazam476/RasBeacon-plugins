@@ -9,7 +9,10 @@ catalog. Install them on RasBeacon from **Plugins → Browse plugins**.
 | [Samba](plugins/samba) | Shares RasBeacon's storage, or a USB drive, with the computers on the hotspot. | A USB drive |
 | [Argon ONE V2](plugins/argon-one) | The Argon ONE V2 case's fan by temperature, and its power button (Raspberry Pi 4). | I²C, GPIO, shutting down, the temperature |
 
-How plugins work, what they may do and how to make your own:
+**Making your own plugins?** Start from
+[RasBeacon-plugin-template](https://github.com/aazam476/RasBeacon-plugin-template):
+a small working plugin, the same tools as this repository, and a guide from
+hello world to plugins like these. The reference for every field is
 [RasBeacon's docs/plugins.md](https://github.com/aazam476/RasBeacon/blob/main/docs/plugins.md).
 
 ## Layout
@@ -73,19 +76,6 @@ release with the `.rba` files, their icons and `rasbeacon-catalog.json`.
 
 Bump a plugin's `version` in its `manifest.json` whenever it changes:
 RasBeacon offers an update only for a newer version.
-
-## Make your own plugin repository
-
-Anyone can publish plugins. To start your own:
-
-1. Fork this repository (then turn on Actions in your fork's **Actions**
-   tab: GitHub leaves them off in forks), and replace the
-   folders in `plugins/` with yours (see
-   [Making a plugin](https://github.com/aazam476/RasBeacon/blob/main/docs/plugins.md#making-a-plugin)).
-2. Make your own signing key and secret ([above](#signing-key-once)).
-3. Publish a release ([above](#publishing-a-release)).
-4. On RasBeacon, add your repository under **Plugins → Browse plugins →
-   Sources** as `owner/repository`.
 
 ## License
 
