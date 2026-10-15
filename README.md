@@ -78,7 +78,8 @@ RasBeacon offers an update only for a newer version.
 
 Anyone can publish plugins. To start your own:
 
-1. Copy this repository (fork it, or **Use this template**), and replace the
+1. Fork this repository (then turn on Actions in your fork's **Actions**
+   tab: GitHub leaves them off in forks), and replace the
    folders in `plugins/` with yours (see
    [Making a plugin](https://github.com/aazam476/RasBeacon/blob/main/docs/plugins.md#making-a-plugin)).
 2. Make your own signing key and secret ([above](#signing-key-once)).
