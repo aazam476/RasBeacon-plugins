@@ -2,6 +2,12 @@ package main
 
 // Talking to the hardware through Linux's device files: the I²C bus and the
 // GPIO character device (the "v2" interface of linux/gpio.h).
+//
+// Both are driven with ioctl, a system call that sends a device a command
+// number and a pointer to a struct. The structs below copy the C structs
+// of linux/gpio.h field by field (same sizes, same order), because the
+// kernel reads them as raw memory; that is also why the package "unsafe"
+// is needed, to hand the kernel their address.
 
 import (
 	"bytes"
@@ -36,7 +42,8 @@ func openFan() (*fanController, error) {
 }
 
 // set writes the fan speed. Newer cases take it in register 0x80; older
-// ones take the byte alone.
+// ones take the byte alone. (Writing to the opened I²C device sends the
+// bytes to the address chosen in openFan.)
 func (c *fanController) set(percent int) error {
 	speed := byte(max(0, min(100, percent)))
 	if _, err := c.f.Write([]byte{0x80, speed}); err == nil {
@@ -97,7 +104,8 @@ type lineEvent struct {
 }
 
 // getLineIoctl is GPIO_V2_GET_LINE_IOCTL: _IOWR(0xB4, 0x07, struct
-// gpio_v2_line_request).
+// gpio_v2_line_request). An ioctl number packs the direction (3: read and
+// write), the struct's size (592 bytes), a type (0xB4: GPIO) and a number.
 var getLineIoctl = uintptr(3<<30 | uint32(unsafe.Sizeof(lineRequest{}))<<16 | 0xB4<<8 | 0x07)
 
 // watchLine watches one GPIO line for pulses (rising, then falling) and
@@ -116,6 +124,8 @@ func watchLine(chip string, line uint32, onPulse func(time.Duration)) error {
 	if err := ioctl(f.Fd(), getLineIoctl, uintptr(unsafe.Pointer(&req))); err != nil {
 		return fmt.Errorf("requesting GPIO %d: %w", line, err)
 	}
+	// The kernel answers with a new file: reading it gives one lineEvent
+	// for each change of the line.
 	events := os.NewFile(uintptr(req.FD), "gpio-line")
 	defer events.Close()
 
@@ -141,6 +151,8 @@ func watchLine(chip string, line uint32, onPulse func(time.Duration)) error {
 	}
 }
 
+// ioctl sends a device the command request with arg (a number, or a
+// struct's address).
 func ioctl(fd, request, arg uintptr) error {
 	if _, _, errno := syscall.Syscall(syscall.SYS_IOCTL, fd, request, arg); errno != 0 {
 		return errno
