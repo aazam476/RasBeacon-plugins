@@ -1,4 +1,4 @@
-# RasBeacon plugins
+# <img src=".github/logo.svg" alt="" height="32"> RasBeacon plugins
 
 The plugins in [RasBeacon](https://github.com/aazam476/RasBeacon)'s built-in
 catalog. Install them on RasBeacon from **Plugins → Browse plugins**.
