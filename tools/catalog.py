@@ -49,6 +49,7 @@ def main():
             "description": m.get("description", ""),
             "permissions": m.get("permissions", []),
             "boards": m.get("boards", []),
+            "minRasBeacon": m.get("minRasBeacon", ""),
             "icon": f"{m['id']}.png",
         }
         if "image" in m:

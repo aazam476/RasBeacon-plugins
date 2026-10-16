@@ -70,7 +70,15 @@ remove and reinstall every plugin.
 
 RasBeacon's catalog lists the plugins in this repository's **newest
 release**. To publish one, open **Actions → Release → Run workflow**, type a
-version name such as `v2026.10.1`, and run it (or push a tag with that name).
+release name, and run it (or push a tag with that name).
+
+Release names follow RasBeacon's version: `v0.1.0`, then `v0.1.1`, `v0.1.2`,
+… are plugins for RasBeacon 0.1; `v0.2.0` starts the plugins for RasBeacon
+0.2. A plugin that needs a newer RasBeacon than an owner has says so with
+`minRasBeacon` in its manifest, and older RasBeacons skip it.
+
+> These plugins are new and not yet fully tested on a Raspberry Pi, like
+> RasBeacon 0.1 itself. Please report problems as issues.
 The workflow builds every plugin, signs it with the key, and publishes the
 release with the `.rba` files, their icons and `rasbeacon-catalog.json`.
 

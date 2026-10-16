@@ -3,7 +3,7 @@
 # .rba files, their icons and rasbeacon-catalog.json. RasBeacon's catalog
 # reads the newest release.
 #
-# Run it by pushing a tag (git tag v2026.10.1 && git push origin v2026.10.1),
+# Run it by pushing a tag (git tag v0.1.0 && git push origin v0.1.0),
 # or from the Actions tab with the tag to create.
 name: Release
 
@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag to create, e.g. v2026.10.1"
+        description: "Release tag to create, e.g. v0.1.0 (for RasBeacon 0.1)"
         required: true
 
 permissions:
