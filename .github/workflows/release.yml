@@ -48,5 +48,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$TAG" dist/* --target "$GITHUB_SHA" --title "Plugins $TAG" \
+          gh release create "$TAG" dist/* --target "$GITHUB_SHA" --title "$TAG" \
             --notes "Plugins for RasBeacon. Install them from RasBeacon's Plugins page (Browse plugins), or download a .rba file and choose Install from a file."
