@@ -126,11 +126,12 @@ func Classify(width time.Duration) Press {
 	return NoPress
 }
 
-// status is what GET /status answers.
+// status is the latest reading, for GET /status. The fan goroutine writes
+// it and the web server reads it, so a mutex makes them take turns.
 type status struct {
 	mu          sync.Mutex
-	Fan         int     `json:"fan"`
-	Temperature float64 `json:"temperature"`
+	Fan         int // percent; -1 until the fan is first set
+	Temperature float64
 }
 
 func main() {
@@ -176,6 +177,8 @@ func runFan(curve Curve, st *status) {
 	}
 }
 
+// readTemperature reads the processor's temperature in °C (the kernel
+// gives it in thousandths of a degree).
 func readTemperature() (float64, error) {
 	data, err := os.ReadFile(thermalFile)
 	if err != nil {
@@ -188,6 +191,8 @@ func readTemperature() (float64, error) {
 	return float64(milli) / 1000, nil
 }
 
+// serveStatus answers GET /status with the latest reading, for the
+// numbers on the plugin's page in RasBeacon.
 func serveStatus(st *status) {
 	http.HandleFunc("GET /status", func(w http.ResponseWriter, r *http.Request) {
 		st.mu.Lock()

@@ -21,12 +21,17 @@ fi
 dist="$root/dist"
 rm -rf "$dist"
 mkdir -p "$dist"
+# Each plugin is put together in a folder in here; it is removed at the end,
+# also when a step fails.
+work="$(mktemp -d)"
+trap 'rm -rf "$work"' EXIT
 
 for dir in "$root"/plugins/*/; do
   id="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["id"])' "$dir/manifest.json")"
   version="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$dir/manifest.json")"
   echo "== $id $version"
-  stage="$(mktemp -d)"
+  stage="$work/$id"
+  mkdir "$stage"
   cp "$dir/manifest.json" "$dir/icon.png" "$stage/"
   [ -f "$dir/README.md" ] && cp "$dir/README.md" "$stage/"
   [ -d "$dir/templates" ] && cp -r "$dir/templates" "$stage/"
@@ -49,7 +54,6 @@ for dir in "$root"/plugins/*/; do
   fi
   "$rbsign" plugin-check "$dist/$id.rba"
   cp "$dir/icon.png" "$dist/$id.png"
-  rm -rf "$stage"
 done
 
 python3 "$root/tools/catalog.py" "$root/plugins" "$dist"
