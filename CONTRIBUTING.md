@@ -36,8 +36,22 @@ plugin on each push and pull request.
 
 ## Commit messages and pull requests
 
-Short, plain-language commit messages in the imperative ("Add a Jellyfin
-plugin"), one change per pull request. Say how you tested it on a Pi.
+Start the subject with a type prefix and a colon, then a short,
+plain-language description in the imperative, such as
+`feat: add a Jellyfin plugin`. Don't add a scope in parentheses (`docs: …`,
+not `docs(guide): …`).
+
+| Prefix | Use for |
+|---|---|
+| `feat:` | New feature |
+| `fix:` | Bug fix |
+| `chore:` | Tooling, config, dependencies |
+| `refactor:` | Code change that isn't a fix or feature |
+| `docs:` | Documentation only |
+| `style:` | Formatting, no logic change |
+| `test:` | Adding or fixing tests |
+
+One change per pull request. Say how you tested it on a Pi.
 
 ## Signing
 
