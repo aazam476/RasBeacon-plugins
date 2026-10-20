@@ -1,7 +1,7 @@
 {
   "id": "adguard-home",
   "name": "AdGuard Home",
-  "version": "0.107.79-1",
+  "version": "0.107.79-2",
   "description": "Blocks ads and trackers for every device on your hotspot, and shows what they look up.",
   "author": "RasBeacon (AdGuard Home by AdGuard)",
   "homepage": "https://github.com/AdguardTeam/AdGuardHome",
@@ -26,7 +26,7 @@
   "templates": [
     { "file": "AdGuardHome.yaml", "path": "/opt/adguardhome/conf/AdGuardHome.yaml", "once": true }
   ],
-  "afterInstall": "On the Internet page, set the DNS servers to {address} and turn on \"Also use while the VPN is on\". Then open AdGuard Home to choose its block lists.",
+  "afterInstall": "On the Internet page, set the DNS servers to {address} and turn on \"Use these servers while the VPN is on\". Then open AdGuard Home to choose its block lists.",
   "metrics": [
     { "label": "Queries (24 h)", "url": "http://{address}:3000/control/stats", "path": "num_dns_queries",
       "username": "{setting:username}", "password": "{setting:password}" },

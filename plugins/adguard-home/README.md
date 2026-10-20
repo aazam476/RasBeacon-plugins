@@ -3,9 +3,9 @@ trackers and malware. It asks **Quad9** over DNS-over-HTTPS for everything
 else, through the VPN when it is on.
 
 **After installing:** on RasBeacon's Internet page, set the DNS servers to
-the address shown under *Next steps*, and turn on **Also use while the VPN is
-on**. Guests' lookups are filtered too, but only your devices can open
-AdGuard Home's web interface.
+the address shown under *Next steps*, and turn on **Use these servers while
+the VPN is on**. Guests' lookups are filtered too, but only your devices can
+open AdGuard Home's web interface.
 
 In AdGuard Home all questions come from RasBeacon (it asks on your devices'
 behalf), so its per-device lists show one client.
