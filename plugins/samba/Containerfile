@@ -4,5 +4,7 @@ FROM docker.io/library/alpine:3.22
 # which the entrypoint uses to give the user their password.
 RUN apk add --no-cache samba-server samba-common-tools
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod 0755 /entrypoint.sh
+# dfree.sh tells computers the share's size and free space (the size limit).
+COPY dfree.sh /usr/local/bin/dfree
+RUN chmod 0755 /entrypoint.sh /usr/local/bin/dfree
 ENTRYPOINT ["/entrypoint.sh"]

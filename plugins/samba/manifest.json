@@ -1,15 +1,17 @@
 {
   "id": "samba",
   "name": "Samba",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Shares a folder, or a USB drive, with the computers on your hotspot.",
   "author": "RasBeacon",
+  "minRasBeacon": "0.3.0",
   "homepage": "https://www.samba.org",
   "permissions": ["usb-drive"],
   "ports": [{ "name": "File sharing (SMB)", "container": 445 }],
   "memoryMb": 128,
   "cpus": 0.5,
   "storageMb": 2048,
+  "storageAdjustable": true,
   "volumes": [{ "name": "share", "path": "/share" }],
   "usbDrive": { "path": "/share", "optional": true },
   "settings": [
@@ -17,7 +19,9 @@
       "help": "Letters, digits, spaces, - and _." },
     { "key": "username", "label": "Username", "type": "text", "default": "traveler", "required": true, "env": "SMB_USER",
       "help": "Lowercase letters, digits, - and _." },
-    { "key": "password", "label": "Password", "type": "password", "required": true, "env": "SMB_PASSWORD" }
+    { "key": "password", "label": "Password", "type": "password", "required": true, "env": "SMB_PASSWORD" },
+    { "key": "sizeLimit", "label": "Size limit", "type": "number", "unit": "GB", "min": 1, "max": 16384, "env": "SMB_SIZE_LIMIT_GB",
+      "help": "Optional. Computers see the share as this big, and Finder and File Explorer don't copy more onto it." }
   ],
   "afterInstall": "On a Mac choose Go → Connect to Server and type smb://{host}:{port:445}; on Windows open \\\\{host} in File Explorer (with port 445). Log in with the username and password you chose."
 }
