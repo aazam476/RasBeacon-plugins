@@ -14,6 +14,7 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -23,8 +24,9 @@ import (
 	"unsafe"
 )
 
-// fanController is the case's microcontroller on the I²C bus.
-type fanController struct{ f *os.File }
+// fanController is the case's microcontroller on the I²C bus. Writing to
+// the opened I²C device sends the bytes to the address chosen in openFan.
+type fanController struct{ w io.Writer }
 
 // i2cSlave is the I2C_SLAVE ioctl: talk to this address from now on.
 const i2cSlave = 0x0703
@@ -38,18 +40,19 @@ func openFan() (*fanController, error) {
 		f.Close()
 		return nil, fmt.Errorf("selecting address 0x%x: %w", fanAddress, err)
 	}
-	return &fanController{f: f}, nil
+	return &fanController{w: f}, nil
 }
 
-// set writes the fan speed. Newer cases take it in register 0x80; older
-// ones take the byte alone. (Writing to the opened I²C device sends the
-// bytes to the address chosen in openFan.)
+// set writes the fan speed: one byte, the speed in percent (0 is off).
+//
+// That single byte is what the Argon ONE V2 obeys. The register form that
+// newer Argon firmware also takes (0x80, then the speed) did nothing on a
+// V2 tested with i2cset; and the case acknowledges those bytes all the
+// same, so the plugin couldn't tell: its page said "off" while the fan
+// kept its last speed.
 func (c *fanController) set(percent int) error {
 	speed := byte(max(0, min(100, percent)))
-	if _, err := c.f.Write([]byte{0x80, speed}); err == nil {
-		return nil
-	}
-	_, err := c.f.Write([]byte{speed})
+	_, err := c.w.Write([]byte{speed})
 	return err
 }
 

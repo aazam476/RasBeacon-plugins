@@ -1,7 +1,7 @@
 {
   "id": "argon-one",
   "name": "Argon ONE V2",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Runs the Argon ONE V2 case's fan by temperature, and its power button.",
   "author": "RasBeacon",
   "homepage": "https://github.com/aazam476/RasBeacon-plugins",
