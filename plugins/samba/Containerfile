@@ -1,6 +1,8 @@
 # The Samba plugin: Samba's file server on Alpine Linux.
 FROM docker.io/library/alpine:3.22
-RUN apk add --no-cache samba-server
+# samba-server has the file server (smbd); samba-common-tools has smbpasswd,
+# which the entrypoint uses to give the user their password.
+RUN apk add --no-cache samba-server samba-common-tools
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 0755 /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

@@ -1,7 +1,7 @@
 {
   "id": "samba",
   "name": "Samba",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shares a folder, or a USB drive, with the computers on your hotspot.",
   "author": "RasBeacon",
   "homepage": "https://www.samba.org",
