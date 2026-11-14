@@ -26,9 +26,22 @@ jobs:
       TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
     steps:
       - uses: actions/checkout@v7
+      # The checker comes from the RasBeacon these plugins are for: its
+      # branch or tag with the same name as the release (v0.3.0 for v0.3.0), so
+      # a manifest field new in that version is known. Without one, its
+      # default branch.
+      - name: Pick RasBeacon's version
+        id: rasbeacon
+        env:
+          NAME: ${{ env.TAG }}
+        run: |
+          if git ls-remote --exit-code https://github.com/aazam476/RasBeacon "refs/heads/$NAME" "refs/tags/$NAME" >/dev/null; then
+            echo "ref=$NAME" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v7
         with:
           repository: aazam476/RasBeacon
+          ref: ${{ steps.rasbeacon.outputs.ref }}
           path: rasbeacon
       - uses: actions/setup-go@v7
         with:
