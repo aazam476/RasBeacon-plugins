@@ -35,10 +35,14 @@ cat > /etc/samba/smb.conf <<CONF
   # at most once a minute.
   dfree command = /usr/local/bin/dfree
   dfree cache time = 60
-  # macOS: no ._ files and .DS_Store clutter.
+  # macOS: no ._ files and .DS_Store clutter. And no lost+found: a share
+  # on RasBeacon's internal storage (or an ext4 drive) is a file system of
+  # its own, whose disk check keeps that folder at its top; it isn't the
+  # owner's. Hidden files can't be opened, and a folder holding only them
+  # can still be deleted.
   vfs objects = catia fruit streams_xattr
   fruit:metadata = stream
-  veto files = /._*/.DS_Store/
+  veto files = /._*/.DS_Store/lost+found/
   delete veto files = yes
 CONF
 
