@@ -6,8 +6,10 @@ Samba starts with no shares: add them on its page. Each share has a name
 - **On RasBeacon's internal storage**, the quota's space is set aside on the
   SD card (RasBeacon keeps 2 GB of it free). When a share is full, nothing
   more fits; deleting still works.
-- **In a folder on a USB drive** (exFAT, FAT32, NTFS or ext4), nothing is set
-  aside. Files already in the folder become the share's. Computers see the
+- **In a folder on a USB drive** (exFAT, FAT32, NTFS or ext4), the quota's
+  space is set aside too: the part its files don't use yet is held by files in
+  the drive's `RasBeacon reserved space` folder, which shrink as the share
+  fills. Files already in the folder become the share's. Computers see the
   share as its quota's size, with only what its files leave of it free, and
   RasBeacon holds it to the quota: once its files reach it, nothing more can
   be added, while deleting still works. Files added on a computer while the
