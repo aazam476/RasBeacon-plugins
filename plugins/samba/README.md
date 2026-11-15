@@ -21,5 +21,9 @@ recovery key it offers.
 - **Mac:** Finder → Go → Connect to Server, `smb://<RasBeacon's address>`.
 - **Windows:** File Explorer, `\\<RasBeacon's address>`.
 
+Updating from Samba 1.0 keeps your share: RasBeacon makes it the first
+share, on the same USB drive, or with its files moved into a share on
+internal storage.
+
 Changing shares restarts Samba, which stops a copy in progress. Guests can't
 reach it. Needs RasBeacon 0.3.0 or newer.
