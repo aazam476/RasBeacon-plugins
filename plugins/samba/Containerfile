@@ -1,10 +1,11 @@
 # The Samba plugin: Samba's file server on Alpine Linux.
 FROM docker.io/library/alpine:3.22
 # samba-server has the file server (smbd); samba-common-tools has smbpasswd,
-# which the entrypoint uses to give the user their password.
-RUN apk add --no-cache samba-server samba-common-tools
+# which the entrypoint uses to give the user their password; jq reads the
+# shares RasBeacon describes (RASBEACON_SHARES).
+RUN apk add --no-cache samba-server samba-common-tools jq
 COPY entrypoint.sh /entrypoint.sh
-# dfree.sh tells computers the share's size and free space (the size limit).
+# dfree.sh tells computers each share's size and free space (its quota).
 COPY dfree.sh /usr/local/bin/dfree
 RUN chmod 0755 /entrypoint.sh /usr/local/bin/dfree
 ENTRYPOINT ["/entrypoint.sh"]

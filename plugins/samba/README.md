@@ -1,22 +1,25 @@
-Shares files with the Windows, macOS and Linux computers on your hotspot.
+Shares folders with the Windows, macOS and Linux computers on your hotspot.
 
-Pick a **USB drive** to share it (exFAT, FAT32, NTFS or ext4), or
-**RasBeacon internal storage** to keep the files on RasBeacon's own SD card.
-Nothing on the drive can run on RasBeacon.
+Samba starts with no shares: add them on its page. Each share has a name
+(what computers see), a place that never changes, and a quota:
+
+- **On RasBeacon's internal storage**, the quota's space is set aside on the
+  SD card (RasBeacon keeps 2 GB of it free). When a share is full, nothing
+  more fits; deleting still works.
+- **In a folder on a USB drive** (exFAT, FAT32, NTFS or ext4), nothing is set
+  aside. Files already in the folder become the share's. Computers see the
+  share as its quota's size, with only what its files leave of it free, so
+  Finder and File Explorer copy nothing more once it is full. Files added on
+  a computer while the drive was out count too. Nothing on a drive can run
+  on RasBeacon.
+
+A quota can grow up to the space there is, and shrink down to what the files
+use, never below. A share can be read-only, and its files can be encrypted,
+so someone who pulls out the drive or the SD card can't read them; save the
+recovery key it offers.
 
 - **Mac:** Finder → Go → Connect to Server, `smb://<RasBeacon's address>`.
-- **Windows:** File Explorer, `\\<RasBeacon's address>` (Windows needs port
-  445).
+- **Windows:** File Explorer, `\\<RasBeacon's address>`.
 
-**How much room:** on RasBeacon's internal storage, you choose the size when
-installing (2 GB to start), and can make it bigger or smaller later on its
-page, down to what the files use. That space is set aside on the SD card.
-With a USB drive, the **Size limit** setting (optional, shown only with a
-drive) makes the share look that big to the computers: Finder and File
-Explorer don't copy more onto it. A limit below what the files already use
-deletes nothing; the share shows as full until files are removed.
-
-Saving a change restarts Samba, so a copy in progress stops, and the
-computer has to copy that file again. Change sizes when nothing is copying.
-
-Guests can't reach it. Needs RasBeacon 0.3.0 or newer.
+Changing shares restarts Samba, which stops a copy in progress. Guests can't
+reach it. Needs RasBeacon 0.3.0 or newer.
