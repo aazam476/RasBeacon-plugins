@@ -1,7 +1,7 @@
 {
   "id": "adguard-home",
   "name": "AdGuard Home",
-  "version": "0.107.79-2",
+  "version": "1.0.0",
   "description": "Blocks ads and trackers for every device on your hotspot, and shows what they look up.",
   "author": "RasBeacon (AdGuard Home by AdGuard)",
   "homepage": "https://github.com/AdguardTeam/AdGuardHome",
